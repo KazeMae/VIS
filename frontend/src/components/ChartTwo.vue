@@ -1,3 +1,4 @@
+<!-- 热力图 -->
 <template>
   <div id="chart2">
 

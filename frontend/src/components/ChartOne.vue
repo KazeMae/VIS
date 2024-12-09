@@ -1,3 +1,4 @@
+<!--污染物分析折线图-->
 <template>
   <div id="chart1">
 
@@ -11,7 +12,7 @@ import {mapState} from "vuex";
 
 export default {
 
-  name: 'ChartOne',
+  name: 'LineChart',
   computed: {
     ...mapState({
       years: state => state.years,  // 从 Vuex 获取 years

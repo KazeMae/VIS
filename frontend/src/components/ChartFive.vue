@@ -1,3 +1,4 @@
+<!--空气质量饼状图-->
 <template>
   <div id="chart5">
 

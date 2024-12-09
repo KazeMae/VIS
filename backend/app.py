@@ -110,48 +110,6 @@ def chart2():
     }
 
 
-@app.route('/chart3', methods=['GET'])
-def chart3():
-    """查询指定区域所有年份的数据，并按年份计算每个污染物的平均值"""
-    area = request.args.get('area', '东昌府区')
-
-    # 获取所有年份的污染物数据
-    data = db.session.query(
-        StationData.year,
-        func.avg(StationData.so2).label('avg_so2'),
-        func.avg(StationData.no2).label('avg_no2'),
-        func.avg(StationData.co).label('avg_co'),
-        func.avg(StationData.o3).label('avg_o3'),
-        func.avg(StationData.pm10).label('avg_pm10'),
-        func.avg(StationData.pm25).label('avg_pm25')
-    ).filter(StationData.area == area).group_by(StationData.year).all()
-
-    # 格式化返回的数据
-    years = [str(row.year) for row in data]
-    pollution_data = {
-        'so2': [],
-        'no2': [],
-        'co': [],
-        'o3': [],
-        'pm10': [],
-        'pm25': []
-    }
-
-    for row in data:
-        for key in pollution_data:
-            pollution_data[key].append(round(getattr(row, f'avg_{key}', 0), 2))
-
-    return {
-        'years': years,
-        'so2': pollution_data['so2'],
-        'no2': pollution_data['no2'],
-        'co': pollution_data['co'],
-        'o3': pollution_data['o3'],
-        'pm10': pollution_data['pm10'],
-        'pm25': pollution_data['pm25']
-    }
-
-
 @app.route('/chart4')
 def chart4():
     """查询指定年份的数据，返回气温、风向、风速、降水量等数据，适配多Y轴折线图"""
@@ -227,6 +185,48 @@ def chart5():
     return jsonify(result)
 
 
+@app.route('/chart3', methods=['GET'])
+def chart3():
+    """查询指定区域所有年份的数据，并按年份计算每个污染物的平均值"""
+    area = request.args.get('area', '东昌府区')
+
+    # 获取所有年份的污染物数据
+    data = db.session.query(
+        StationData.year,
+        func.avg(StationData.so2).label('avg_so2'),
+        func.avg(StationData.no2).label('avg_no2'),
+        func.avg(StationData.co).label('avg_co'),
+        func.avg(StationData.o3).label('avg_o3'),
+        func.avg(StationData.pm10).label('avg_pm10'),
+        func.avg(StationData.pm25).label('avg_pm25')
+    ).filter(StationData.area == area).group_by(StationData.year).all()
+
+    # 格式化返回的数据
+    years = [str(row.year) for row in data]
+    pollution_data = {
+        'so2': [],
+        'no2': [],
+        'co': [],
+        'o3': [],
+        'pm10': [],
+        'pm25': []
+    }
+
+    for row in data:
+        for key in pollution_data:
+            pollution_data[key].append(round(getattr(row, f'avg_{key}', 0), 2))
+
+    return {
+        'years': years,
+        'so2': pollution_data['so2'],
+        'no2': pollution_data['no2'],
+        'co': pollution_data['co'],
+        'o3': pollution_data['o3'],
+        'pm10': pollution_data['pm10'],
+        'pm25': pollution_data['pm25']
+    }
+
+
 @app.route('/chart6', methods=['GET'])
 def chart6():
     """获取所有车辆类型的数量分布以及总数"""
@@ -253,12 +253,6 @@ def chart6():
             'name': row.vehicle_type,
             'value': row.total_count
         })
-
-    # 将总车辆数添加到结果中
-    result.append({
-        'name': '总数',
-        'value': total_vehicles
-    })
 
     return jsonify(result)
 
@@ -287,7 +281,7 @@ def get_map_data():
         func.sum(CheckpointData.vehicle_count).label('total_vehicle_count')
     ).group_by(CheckpointData.checkpoint_name, CheckpointData.jd, CheckpointData.wd) \
         .order_by(func.sum(CheckpointData.vehicle_count).desc()) \
-        .limit(50).all()  # 返回前10个站点
+        .limit(150).all()
 
     data = [{
         'checkpoint_name': row.checkpoint_name,

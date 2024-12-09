@@ -4,6 +4,7 @@
       <div class="title-left">{{ title }}</div>
       <div class="title-right">
         <span v-for="(item, index) in auth" :key="index">{{ item }}</span>
+        <button @click="goBack">复位</button> <!-- 添加按钮，并绑定点击事件 -->
       </div>
     </div>
     <div class="container">
@@ -93,6 +94,9 @@ export default {
   methods: {
     updateYear(newYear) {
       this.selectedYear = newYear; // 更新选中的年份
+    },
+    goBack() {
+      location.reload();
     }
   }
 }
@@ -143,6 +147,22 @@ export default {
     padding: 0.463vw;
     white-space: normal;
     word-wrap: break-word;
+  }
+  .title-right button {
+    background-color: #f5fafd;
+    color: #333;
+    border: none;
+    padding: 0.463vw 0.926vw;
+    border-radius: 0.2315vw;
+    cursor: pointer;
+    font-size: 1vw;
+    font-family: 'hyxbsh', serif;
+    margin-left: 0.463vw;
+    transition: background-color 0.3s ease;
+  }
+
+  .title-right button:hover {
+    background-color: #e0e0e0;
   }
 
 }

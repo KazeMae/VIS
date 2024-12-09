@@ -1,3 +1,4 @@
+<!--地区选择-->
 <template>
   <div class="choose-area">
     <select v-model="area" class="area-select">
